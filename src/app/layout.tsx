@@ -1,3 +1,9 @@
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {
+  ClerkProvider,
+  
+} from '@clerk/nextjs'
 import type { Metadata } from "next";
 import Nav from "./components/navbar";
 
@@ -7,7 +13,6 @@ import { Inter } from 'next/font/google';
 import Footer from "./components/footer";
 
 const inter = Inter({ subsets: ['latin'] });
-
 
 
 export const metadata: Metadata = {
@@ -21,14 +26,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en">
       <body
         className={`${inter.className} `}
       >
        <Nav />
+      
+       <ToastContainer position="top-right" autoClose={3000} hideProgressBar={true} />
         {children}
         <Footer/>
       </body>
     </html>
+    </ClerkProvider>
   );
 }

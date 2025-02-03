@@ -1,9 +1,11 @@
 import Image from "next/image"
 
+
 export default function Header() {
     return (
         <>
             <header className="  h-auto sm:h-[650px] md:h-[680px] lg:h-[680px] ;xl:h-[680px] flex-auto sm:flex justify-between bg-[#F0F2F3] ">
+              
                 <div className="flex text-[50px] sm:text-[50px] sm:font-bold mt-auto sm:mt-[200px] ml-auto  sm:ml-16 custom-text p-4">
                     <p className=" flex-col sm:flex-row leading-none sm:m-0  p-4 sm:p-0">Best Furniture  <br></br>
                         Collection for your <br></br>

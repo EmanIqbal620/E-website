@@ -1,64 +1,129 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast, ToastContainer } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';
+import Image from 'next/image';
+
+interface CartItem {
+  id: string;
+  title: string;
+  price: number;
+  imageUrl: string;
+  quantity: number;
+}
 
 export default function Cart() {
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const router = useRouter();
+
+  // Load cart items from localStorage when component mounts
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    setCart(storedCart);
+  }, []);
+
+  // Update cart in localStorage and state
+  const updateCartInLocalStorage = (updatedCart: CartItem[]) => {
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+  // Increase quantity of a specific item
+  const handleIncreaseQuantity = (id: string) => {
+    const updatedCart = cart.map((item) =>
+      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+    );
+    updateCartInLocalStorage(updatedCart);
+    toast.success("Increased item quantity!");
+  };
+
+  // Decrease quantity of a specific item
+  const handleDecreaseQuantity = (id: string) => {
+    const updatedCart = cart.map((item) =>
+      item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
+    );
+    updateCartInLocalStorage(updatedCart);
+    toast.success("Decreased item quantity!");
+  };
+
+  // Remove an item from the cart
+  const handleRemoveItem = (id: string) => {
+    const updatedCart = cart.filter((item) => item.id !== id);
+    updateCartInLocalStorage(updatedCart);
+    toast.success("Item removed from cart!");
+  };
+
+  // Calculate the total price of items in the cart
+  const calculateTotal = () => {
+    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+  };
+
   return (
-    <div className="flex flex-col md:flex-row border-2 border-gray-200 shadow-md p-5 gap-5 w-full max-w-7xl mx-auto">
-      {/* Left Section (Cart Items) */}
-      <div className="flex-[7] flex flex-col gap-4">
-        {/* Cart Item 1 */}
-        <div className="flex items-center gap-4 p-4 border rounded-md shadow-sm">
-          <Image src="/product-3.png" alt="logo" width={150} height={140} />
-          <div className="flex flex-col w-full">
-            <div className="flex justify-between text-gray-900">
-              <p>Library Stool Chair</p>
-              <p className="font-bold">MRP: $99</p>
-            </div>
-            <p className="text-gray-500 mt-2">Ashen Slate/Cobalt Bliss</p>
-            <p className="text-gray-500">Quantity: 1</p>
-            <div className="flex gap-4 mt-4 text-gray-500">
-              <i className="bi bi-heart"></i>
-              <i className="bi bi-trash3"></i>
-            </div>
-          </div>
-        </div>
+    <div className="p-8 bg-[#f9fafb] min-h-screen">
+      <ToastContainer />
+      <h1 className="text-3xl font-extrabold text-[#272343] mb-6">Your Cart</h1>
 
-        {/* Cart Item 2 */}
-        <div className="flex items-center gap-4 p-4 border rounded-md shadow-sm">
-          <Image src="/our-product--2.png" alt="logo" width={150} height={140} />
-          <div className="flex flex-col w-full">
-            <div className="flex justify-between text-gray-900">
-              <p>Library Stool Chair</p>
-              <p className="font-bold">MRP: $99</p>
-            </div>
-            <p className="text-gray-500 mt-2">Ashen Slate/Cobalt Bliss</p>
-            <p className="text-gray-500">Quantity: 1</p>
-            <div className="flex gap-4 mt-4 text-gray-500">
-              <i className="bi bi-heart"></i>
-              <i className="bi bi-trash3"></i>
-            </div>
-          </div>
-        </div>
-      </div>
+      {cart.length === 0 ? (
+        <div>Your cart is empty!</div>
+      ) : (
+        <div className="space-y-6">
+          {cart.map((item) => (
+            <div key={item.id} className="flex items-center gap-4 border-b pb-4">
+              <div className="w-1/4">
+                <Image
+                  src={item.imageUrl}
+                  alt={item.title}
+                  className="object-cover"
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <div className="w-3/4 flex justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-[#272343]">{item.title}</h2>
+                  <p className="text-sm text-gray-600">${item.price}</p>
+                </div>
 
-      {/* Right Section (Summary) */}
-      <div className="flex-[3] flex flex-col bg-gray-100 p-5 rounded-md shadow-md">
-        <h4 className="text-xl font-semibold text-gray-800 mb-4">Summary</h4>
-        <div className="flex justify-between py-2 border-b">
-          <p>Subtotal</p>
-          <p className="font-bold">$198.00</p>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => handleDecreaseQuantity(item.id)}
+                    className="px-3 py-1 bg-gray-300 rounded-md"
+                  >
+                    -
+                  </button>
+                  <span className="text-xl">{item.quantity}</span>
+                  <button
+                    onClick={() => handleIncreaseQuantity(item.id)}
+                    className="px-3 py-1 bg-gray-300 rounded-md"
+                  >
+                    +
+                  </button>
+                  <button
+                    onClick={() => handleRemoveItem(item.id)}
+                    className="px-3 py-1 bg-red-500 text-white rounded-md"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="flex justify-between py-2 border-b">
-          <p>Estimated Delivery & Handling</p>
-          <p>Free</p>
+      )}
+
+      {cart.length > 0 && (
+        <div className="mt-6 flex justify-between items-center">
+          <h2 className="text-2xl font-semibold text-[#272343]">Total: ${calculateTotal()}</h2>
+          <button
+            onClick={() => router.push("/checkout")}
+            className="bg-[#2c606b] text-white px-8 py-3 rounded-lg"
+          >
+            Proceed to Checkout
+          </button>
         </div>
-        <div className="flex justify-between py-2 font-bold text-lg">
-          <p>Total</p>
-          <p>$198.00</p>
-        </div>
-        <button className="mt-6 py-3 bg-teal-500 text-white font-semibold rounded-full text-center hover:bg-teal-600 transition">
-          Member Checkout
-        </button>
-      </div>
+      )}
     </div>
   );
 }

@@ -22,12 +22,13 @@ export default function About() {
 
         {/* Right Section */}
         <div className="flex-1  bg-gray-100 h-[250px] lg:h-[300px] relative overflow-hidden">
-          <Image
-            src="/product-image.png"
-            alt="logo"
-            fill
-            className="object-cover"
-          />
+        <Image
+  src="/product-image.png"
+  alt="logo"
+  width={500}
+  height={300}
+  className="object-cover"
+/>
         </div>
       </div>
  
@@ -64,7 +65,7 @@ export default function About() {
               height={24}
               className="object-contain"
             />
-            <div className="">
+            <div >
               <h3 className="mb-4 text-[16px] font-bold">Made by true artisans</h3>
               <p>
               Handmade crafted goods made with real passion and craftmanship
@@ -80,7 +81,7 @@ export default function About() {
               height={24}
               className="object-contain"
             />
-            <div className="">
+            <div >
               <h3 className="mb-4 text-[16px] font-bold">Unbeatable prices</h3>
               <p>
               For our materials and quality you won’t find better prices anywhere
@@ -115,6 +116,8 @@ export default function About() {
         <Image
           src="/Large.png" // Replace with your image URL
           alt="Image 1"
+          height={200}
+          width={200}
           className="h-[200px] lg:h-[300px] w-full object-cover rounded-lg"
         />
         <div className="mt-4 text-center">
@@ -128,6 +131,8 @@ export default function About() {
         <Image
           src="/Parent (1).png" // Replace with your image URL
           alt="Image 2"
+          width={200}
+          height={200}
           className="h-[200px] lg:h-[300px] w-full object-cover rounded-lg"
         />
         <div className="mt-4 text-center">
@@ -142,6 +147,8 @@ export default function About() {
           src="/Parent.png" // Replace with your image URL
           alt="Image 3"
           className="h-[200px] lg:h-[300px] w-full object-cover rounded-lg"
+          height={200}
+          width={200}
         />
         <div className="mt-4 text-center">
           <h3 className="text-lg font-semibold">The Dandy chair</h3>

@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 
 export default function Shop() {
@@ -36,16 +37,15 @@ export default function Shop() {
         </div>
       </div>
 
-      {/* all product side  */}
+      {/* Featured Products Section */}
       <div>
-        <div className="flex justify-between text-[#272343] text-[30px] font-bold p-4 items-center" >
-          <h1 className="">
-            FEATURED PRODUCT
-          </h1>
-          <p className="text-[20px] ">View All</p>
+        <div className="flex justify-between text-[#272343] text-[30px] font-bold p-4 items-center">
+          <h1>FEATURED PRODUCT</h1>
+          <p className="text-[20px]">View All</p>
         </div>
-        <div className="flex justify-around flex-col sm:flex-row md:flex-row lg:flex-row xl:flex-row gap-y-10  sm:gap-0 md:gap-0 xl:gap-0 ">
-          <div className="  sm:w-[250px] sm:h-[280px]  bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg flex-col sm:flex-row  md:flex-row lg:flex-row m-auto sm:m-0 mx-auto sm:mx-0 ">
+        <div className="flex flex-col sm:flex-row md:flex-row lg:flex-row xl:flex-row gap-y-10 sm:gap-10 md:gap-10 xl:gap-10 justify-center">
+          {/* Image 1 */}
+          <div className="bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg flex-col m-auto hover:shadow-lg transition-shadow">
             <div>
               <Image
                 src="/Image (5).png"
@@ -55,15 +55,14 @@ export default function Shop() {
                 className="object-contain"
               />
             </div>
-            {/* title */}
-            <div className="flex justify-between p-3  text-[#272343] ">
+            <div className="flex justify-between p-3 text-[#272343]">
               <p>Library Stool Chair</p>
               <p className="font-bold">$99</p>
             </div>
           </div>
 
-          {/* 2 */}
-          <div className="  sm:w-[250px] sm:h-[280px]  bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg flex-col sm:flex-row  md:flex-row lg:flex-row m-auto sm:m-0 mx-auto sm:mx-0">
+          {/* Image 2 */}
+          <div className="bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg flex-col m-auto hover:shadow-lg transition-shadow">
             <div>
               <Image
                 src="/product-image.png"
@@ -73,14 +72,14 @@ export default function Shop() {
                 className="object-contain"
               />
             </div>
-            {/* title */}
-            <div className="flex justify-between p-3  text-[#272343] ">
+            <div className="flex justify-between p-3 text-[#272343]">
               <p>Library Stool Chair</p>
               <p className="font-bold">$99</p>
             </div>
           </div>
-          {/* 3 */}
-          <div className="  sm:w-[250px] sm:h-[280px]  bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg flex-col sm:flex-row  md:flex-row lg:flex-row m-auto sm:m-0 mx-auto sm:mx-0">
+
+          {/* Image 3 */}
+          <div className="bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg flex-col m-auto hover:shadow-lg transition-shadow">
             <div>
               <Image
                 src="/Image (7).png"
@@ -90,14 +89,14 @@ export default function Shop() {
                 className="object-contain"
               />
             </div>
-            {/* title */}
-            <div className="flex justify-between p-3  text-[#272343] ">
+            <div className="flex justify-between p-3 text-[#272343]">
               <p>Library Stool Chair</p>
               <p className="font-bold">$99</p>
             </div>
           </div>
-          {/* 4 */}
-          <div className="  sm:w-[250px] sm:h-[280px]  bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg flex-col sm:flex-row  md:flex-row lg:flex-row m-auto sm:m-0 mx-auto sm:mx-0">
+
+          {/* Image 4 */}
+          <div className="bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg flex-col m-auto hover:shadow-lg transition-shadow">
             <div>
               <Image
                 src="/product-3.png"
@@ -107,15 +106,14 @@ export default function Shop() {
                 className="object-contain"
               />
             </div>
-            {/* title */}
-            <div className="flex justify-between p-3  text-[#272343] ">
+            <div className="flex justify-between p-3 text-[#272343]">
               <p>Library Stool Chair</p>
               <p className="font-bold">$99</p>
             </div>
           </div>
-          {/* 5 */}
 
-          <div className="  sm:w-[250px] sm:h-[280px]  bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg flex-col sm:flex-row  md:flex-row lg:flex-row m-auto sm:m-0 mx-auto sm:mx-0">
+          {/* Image 5 */}
+          <div className="bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg flex-col m-auto hover:shadow-lg transition-shadow">
             <div>
               <Image
                 src="/Image (3).png"
@@ -125,8 +123,7 @@ export default function Shop() {
                 className="object-contain"
               />
             </div>
-            {/* title */}
-            <div className="flex justify-between p-3  text-[#272343] ">
+            <div className="flex justify-between p-3 text-[#272343]">
               <p>Library Stool Chair</p>
               <p className="font-bold">$99</p>
             </div>

@@ -1,111 +1,186 @@
+'use client'
 import Image from "next/image";
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { client } from "@/sanity/lib/client";
 import "bootstrap-icons/font/bootstrap-icons.css";
-export default function Futuredproduct() {
+
+// Define product type
+interface Product {
+  _id: string;
+  title: string;
+  price: number;
+  priceWithoutDiscount: number;
+  badge: string;
+  imageUrl: string;
+  description: string;
+  inventory: number;
+  tags: string[];
+}
+
+// Wishlist and Cart item type definition
+interface WishlistItem {
+  id: string;
+  title: string;
+}
+
+async function getData(): Promise<Product[]> {
+  const query = `*[_type == "products" && "featured" in tags] | order(title) [0...4] {
+    _id,
+    title,
+    price,
+    priceWithoutDiscount,
+    badge,
+    "imageUrl": image.asset->url,
+    description,
+    inventory,
+    tags
+  }`;
+  return client.fetch(query);
+}
+
+export default function FeaturedProducts() {
+  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [cart, setCart] = useState<WishlistItem[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  // Fetch products on load
+  useEffect(() => {
+    const storedWishlist = localStorage.getItem('wishlist');
+    const storedCart = localStorage.getItem('cart');
+    if (storedWishlist) {
+      setWishlist(JSON.parse(storedWishlist));
+    }
+    if (storedCart) {
+      setCart(JSON.parse(storedCart));
+    }
+    
+    const fetchData = async () => {
+      const products = await getData();
+      setProducts(products);
+    };
+    
+    fetchData();
+  }, []);
+
+  // Add product to wishlist
+  const addToWishlist = (product: WishlistItem) => {
+    const updatedWishlist = [...wishlist, product];
+    setWishlist(updatedWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
+  };
+
+  // Remove product from wishlist
+  const removeFromWishlist = (id: string) => {
+    const updatedWishlist = wishlist.filter(item => item.id !== id);
+    setWishlist(updatedWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
+  };
+
+  // Add product to cart
+  const addToCart = (product: WishlistItem) => {
+    const updatedCart = [...cart, product];
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+  };
+
+  // Remove product from cart
+  const removeFromCart = (id: string) => {
+    const updatedCart = cart.filter(item => item.id !== id);
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+  };
+
+  // Check if product is in wishlist
+  const isInWishlist = (id: string) => {
+    return wishlist.some(item => item.id === id);
+  };
+
+  // Check if product is in cart
+  const isInCart = (id: string) => {
+    return cart.some(item => item.id === id);
+  };
+
   return (
-    <>
-      <h1 className="text-[#272343] text-[30px] font-bold">
+    <div className="px-6 py-8 bg-[#f9fafb]">
+      <h1 className="text-3xl font-bold text-[#272343] mb-8 text-center">
         Featured Products
       </h1>
 
-      <section className=" flex-col sm:flex-row md:flex-row lg:flex-row xl:flex-row mx-auto sm:mx-0 md:mx-0 lg:mx-0 xl:mx-0 flex w-full h-full sm:h-[300px] sm:w-full md:w-full md:h-[400px]  lg:h-[400px] bg-[#f9fafb ]  justify-evenly sm:justify-around md:justify-around p-0 sm:p-3 md:p-3 lg:p-3 items-center  ">
+      {/* Products Section */}
+      <section className="p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
+        {products.map((product) => (
+          <div
+            key={product._id}
+            className="sm:w-[250px] sm:h-[380px] bg-white shadow-md p-4 rounded-lg flex flex-col m-auto transform transition duration-300 hover:scale-105 hover:shadow-xl hover:bg-[#f5f7fa]"
+          >
+            {/* Product Image with Badge */}
+            <div className="relative w-full h-[280px] mb-4">
+              {/* Sales Badge */}
+              {product.badge === "Sale" && (
+                <div className="absolute top-2 left-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                  Sale
+                </div>
+              )}
 
-        <div className=" flex p-6 px-1 flex-col sm:flex-row md:flex-row ">
-            
-          <div className=" sm:w-[250px] sm:h-[290px]  bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg flex-col sm:flex-row  md:flex-row lg:flex-row m-auto sm:m-0 mx-auto sm:mx-0">
-            <div>
-              <Image
-                src="/product-image.png"
-                alt="logo"
-                width={240}
-                height={280}
-                className="object-contain"
-              />
+              {/* New Badge */}
+              {product.badge === "New" && (
+                <div className="absolute top-2 left-2 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                  New
+                </div>
+              )}
+
+              {/* Product Image */}
+              <Link href={`/shop/${product._id}`}>
+                <Image
+                  src={product.imageUrl || "/default-product-image.png"}
+                  alt={product.title}
+                  width={240}
+                  height={280}
+                  className="object-contain rounded-lg transition duration-300 ease-in-out"
+                />
+              </Link>
             </div>
-            {/* title */}
-            <div className="flex justify-between p-1 text-[#272343] ">
-              <div>
-                <p>Library Stool Chair</p>
-                <p className="font-bold">$20</p>
+
+            {/* Product Details */}
+            <div className="flex justify-between items-center p-1 text-[#272343] mt-2 w-full">
+              {/* Product Title & Price */}
+              <div className="w-3/4">
+                <p className="text-md font-semibold truncate">{product.title}</p>
+                <p className="font-bold text-[#3a3b3c]">${product.price}</p>
               </div>
-              <div className=" p-3 items-center bg-[#F0F2F3] rounded-full">
-                <i className="bi bi-cart"></i>
+
+              {/* Heart Icon for Wishlist */}
+              <div
+                className={`p-3 rounded-full flex items-center justify-center cursor-pointer ${isInWishlist(product._id) ? "text-red-500" : "text-[#272343]"}`}
+                onClick={() => {
+                  if (isInWishlist(product._id)) {
+                    removeFromWishlist(product._id);
+                  } else {
+                    addToWishlist({ id: product._id, title: product.title });
+                  }
+                }}
+              >
+                <i className={`bi bi-heart${isInWishlist(product._id) ? "-fill" : ""} transition-colors duration-200`} />
               </div>
-            </div>
-          </div>
-        </div>
-        {/*  product2 */}
-        <div className="p-6 px-1">
-          <div className="w-[250px] h-[290px] bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg flex-col sm:flex-row  md:flex-row lg:flex-row m-auto sm:m-0 mx-auto sm:mx-0">
-            <div>
-              <Image
-                src="/product.png"
-                alt="logo"
-                width={240}
-                height={280}
-                className="object-contain"
-              />
-            </div>
-            {/* title */}
-            <div className="flex justify-between p-1 text-[#272343] ">
-              <div>
-                <p>Library Stool Chair</p>
-                <p className="font-bold">$20</p>
-              </div>
-              <div className="p-3 items-center bg-[#F0F2F3] rounded-full">
-                <i className="bi bi-cart"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* product 3 */}
-        <div className="p-6 px-1">
-          <div className="w-[250px] h-[290px] bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg">
-            <div>
-              <Image
-                src="/product-3.png"
-                alt="logo"
-                width={240}
-                height={280}
-                className="object-contain"
-              />
-            </div>
-            {/* title */}
-            <div className="flex justify-between p-1 text-[#272343] ">
-              <div>
-                <p>Library Stool Chair</p>
-                <p className="font-bold">$20</p>
-              </div>
-              <div className="p-3 items-center bg-[#F0F2F3] rounded-full">
-                <i className="bi bi-cart"></i>
+
+              {/* Cart Icon */}
+              <div
+                className={`p-3 rounded-full flex items-center justify-center cursor-pointer ${isInCart(product._id) ? "text-yellow-500" : "text-[#272343]"}`}
+                onClick={() => {
+                  if (isInCart(product._id)) {
+                    removeFromCart(product._id);
+                  } else {
+                    addToCart({ id: product._id, title: product.title });
+                  }
+                }}
+              >
+                <i className={`bi bi-cart${isInCart(product._id) ? "-fill" : ""} transition-colors duration-200`} />
               </div>
             </div>
           </div>
-        </div>
-        {/* product 4 */}
-        <div className="p-6 px-1">
-          <div className="w-[250px] h-[290px] bg-[#ffffff] shadow-[5px_5px_5px_] p-4 items-center justify-center rounded-lg">
-            <div>
-              <Image
-                src="/product-4.png"
-                alt="logo"
-                width={240}
-                height={280}
-                className="object-contain"
-              />
-            </div>
-            {/* title */}
-            <div className="flex justify-between p-1 tet-[#272343] ">
-              <div>
-                <p>Library Stool Chair</p>
-                <p className="font-bold">$20</p>
-              </div>
-              <div className="p-3 items-center bg-[#F0F2F3] rounded-full ">
-                <i className="bi bi-cart "></i>
-              </div>
-            </div>
-          </div>
-        </div>
+        ))}
       </section>
-    </>
+    </div>
   );
 }
